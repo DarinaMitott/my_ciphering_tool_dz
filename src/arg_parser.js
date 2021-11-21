@@ -42,6 +42,9 @@ function parse() {
                     const mode = item[1] === '1' ? 'encoding' : 'decoding';
                     cipher = new Caesar(item[0] === 'C', mode);
                 } else if (item[0] === 'A') {
+                    if (item.length !== 1) {
+                        throw new InvalidConfigError('Atbash doesnt support mode option');
+                    }
                     cipher = new Atbash();
                 } else {
                     throw new InvalidConfigError(`Unsupported Cipher specified in the config: "${item[0]}"`)
@@ -59,6 +62,11 @@ function parse() {
         } else if ('-o' === opName || '--output' === opName) {
             if (typeof options.output !== 'undefined') {
                 throw new InvalidArgumentError(`You cannot duplicate options ("${opName}")`);
+            }
+            try {
+                fs.accessSync(opVal, fs.constants.F_OK | fs.constants.W_OK);
+            } catch {
+                throw new InvalidConfigError('Output file does not exist');
             }
             options.output = fs.createWriteStream(opVal, {'flags': 'a'});
         } else {

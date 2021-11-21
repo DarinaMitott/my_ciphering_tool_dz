@@ -13,7 +13,7 @@ try {
 
     pipeline(...chain, (err) => {
         if (err) {
-            console.error(`Pipeline error occurred: ${err}`);
+            console.error(`Error is occurred: ${err}`);
             process.exit(1);
         }
     });
